@@ -29,7 +29,7 @@ def evaluate_line(nums):
 
     return number_safe
 
-f = open("input-day2")
+f = open("input")
 
 lines = f.read().split("\n")[0:-1]
 safe = 0

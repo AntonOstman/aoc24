@@ -1,3 +1,4 @@
+# You need to make the input flattened
 # part1: grep 'mul([0-9]*,[0-9]*)' input -o | grep '[0-9]*,[0-9]*' -o > clean-input && python3 sol.py
 # part2: cat input2 | perl -pe "s/don\'t\(\).*?do\(\)//g" | grep 'mul([0-9]*,[0-9]*)' -o | grep '[0-9]*,[0-9]*' -o > clean-input && python3 sol.py
 
