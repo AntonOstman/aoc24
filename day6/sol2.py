@@ -1,4 +1,5 @@
 from threading import Thread, Lock
+from multiprocessing import Pool
 f = open("input")
 
 lines = f.read().split("\n")[0:-1]
@@ -101,36 +102,18 @@ for i, line in enumerate(lines):
         new_lines[i].append([letter])
 
 total = 0
-mutex = Lock()
 
-
-def search(obs_x, obs_y):
-    global total
-    global lines
-
-    prev_states = []
-    pos, dir = get_position(lines)
-    gone = False
-    print('current',(obs_x,obs_y))
-    while(not gone):
-        if (pos, dir) in prev_states:
-            with mutex:
-                total += 1
-            return 1
-        prev_states.append((pos, dir))
-        pos, dir, gone = get_action(lines, pos, dir, (obs_x, obs_y))
-
-    return 0
-
-threads :list[Thread] = []
 for obs_y in range(len(lines)):
     for obs_x in range(len(lines[0])):
-        th = Thread(target=search, args = (obs_x, obs_y))
-        th.start()
-        threads.append(th)
-
-for thread in threads:
-    thread.join()
+        prev_states = set()
+        pos, dir = get_position(lines)
+        gone = False
+        while(not gone):
+            if (pos, dir) in prev_states:
+                total += 1
+                break
+            prev_states.add((pos, dir))
+            pos, dir, gone = get_action(lines, pos, dir, (obs_x, obs_y))
 
 print(total)
 
