@@ -1,5 +1,6 @@
-from threading import Thread, Lock
-from multiprocessing import Pool
+from threading import Lock
+from multiprocessing import Process, Pipe
+import time
 f = open("input")
 
 lines = f.read().split("\n")[0:-1]
@@ -103,18 +104,40 @@ for i, line in enumerate(lines):
 
 total = 0
 
-for obs_y in range(len(lines)):
-    for obs_x in range(len(lines[0])):
-        prev_states = set()
-        pos, dir = get_position(lines)
-        gone = False
-        while(not gone):
-            if (pos, dir) in prev_states:
-                total += 1
-                break
-            prev_states.add((pos, dir))
-            pos, dir, gone = get_action(lines, pos, dir, (obs_x, obs_y))
+def search(p, obs_x, obs_y): 
+    global total
+    prev_states = set()
+    pos, dir = get_position(lines)
+    gone = False
+    print('current', obs_x, obs_y)
+    while(not gone):
+        if (pos, dir) in prev_states:
+            p.send(1)
+            p.close()
+            return
+        prev_states.add((pos, dir))
+        pos, dir, gone = get_action(lines, pos, dir, (obs_x, obs_y))
 
+    p.send(0)
+    p.close()
+    return
+
+pool = 20
+start_time = time.time()
+for obs_y in range(len(lines)):
+    cur_pool = 0
+    threads = []
+    for obs_x in range(0,len(lines[0])):
+        parent, child = Pipe()
+        th = Process(target=search, args=(child, obs_x, obs_y))
+        th.start()
+        threads.append((parent,th))
+
+    for pipe,process in threads:
+        total += pipe.recv()
+        process.join()
+
+print('time', time.time() - start_time)
 print(total)
 
 f.close()
