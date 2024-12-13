@@ -36,8 +36,12 @@ for i in range(0, len(lines), 4):
 
     # Trick is to check if computing the price again with rounded values
     # gives the same prices back, as it should for a valid solution of only integers
-    # I tried with np.isclose with a tolerance but that did not work either
+    # np.isclose works too with a relative tolerance of 0 and absolute tolerance of 1e-4
     # I also checked if A was well continioed if that was an issue, but did not seem like it
+
+    # if np.isclose(sol[0,0], round(sol[0,0]), rtol = 0 ,atol = 1e-4) and np.isclose(sol[1,0], round(sol[1,0]), rtol = 0 ,atol = 1e-4):
+    #     ans += 3 * sol[0]
+    #     ans += sol[1]
 
     b1_round = a * c + b * d
     b2_round = a * e + b * f
