@@ -50,11 +50,15 @@ def djikstra(node, seen, lines, prev, dist):
                 prev[neighbour] = (node, dir)
                 q.put((cost, neighbour, dir))
 
-f = open('input')
+f = open('test')
 
 lines = f.read().splitlines()
 
-graph = defaultdict(tuple)
+end_graph = defaultdict(tuple)
+start_graph = defaultdict(tuple)
+
+end_dist = defaultdict(int)
+start_dist = defaultdict(int)
 dist = defaultdict(int)
 
 end = None
@@ -68,24 +72,36 @@ for y, line in enumerate(lines):
         map[y].append(letter)
         if letter == 'E':
             end = (x,y)
+            seen = set()
+            djikstra((x,y), seen, lines, end_graph, end_dist)
         if letter == 'S':
             seen = set()
             start = (x,y)
-            djikstra((x,y), seen, lines, graph, dist)
+            djikstra((x,y), seen, lines, start_graph, start_dist)
 
 node = end
 cost = 0
 
 dirmap = {(1,0) : '>', (-1,0) : '<', (0,-1):'^', (0,1):'v'}
 num = 0
-while(node != start):
 
-    num+=1
-    # print(dist[node])
-    cost += dist[node]
-    node, dir = graph[node]
-    print(node)
-    map[node[1]][node[0]] = dirmap[dir]
+seen = set()
+
+for y, line in enumerate(lines):
+    for x, letter in enumerate(line):
+        if end_dist[(x,y)] + start_dist[(x,y)] == end_dist[start]:
+            seen.add((x,y))
+            # num += 1
+        
+
+# while(node != start):
+#
+#     num+=1
+#     # print(dist[node])
+#     cost += dist[node]
+#     node, dir = graph[node]
+#     print(node)
+#     map[node[1]][node[0]] = dirmap[dir]
 
 for i in map:
     print(i)
@@ -93,7 +109,7 @@ for i in map:
 # print(dist[end])
 # print(cost)
 print(dist[end])
-print(num)
+print(len(seen))
 
 # print(graph)
 
