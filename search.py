@@ -55,16 +55,17 @@ def dfs(node, seen, lines, graph):
 def bfs(node, seen, lines, graph):
 
     q = deque()
-    q.append(node)
+    q.appendleft(node)
 
     while(len(q) > 0):
         curr = q.pop()
-        seen.add(curr)
-        neighbours = get_adj8(curr, lines)
-        for neighbour in neighbours:
-            graph[curr] = neighbour
-            if neighbour not in seen:
-                q.append(neighbour)
+        if curr not in seen:
+            seen.add(curr)
+            neighbours = get_adj8(curr, lines)
+            for neighbour in neighbours:
+                graph[curr] = neighbour
+                if neighbour not in seen:
+                    q.append(neighbour)
 
 
 
